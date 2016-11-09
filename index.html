@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>音乐播放器</title>
+	<meta name="viewport" content="width=device-width">
+	<!-- Add to homescreen for Safari on Ios -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Todo">
+	<!-- <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="Todo">
+	<meta name="theme-color" content="#2F3BA2">
+	<!-- <link rel="icon" sizes="192x192" href="chrome-touch-icon-192x192.png"> -->
+	<link rel="stylesheet" href="css/music.css">
+	<script src="js/jquery.js"></script>
+	<script src="js/music.js"></script>
+</head>
+<body>
+<div id="music">
+	<img src="img/薛之谦1.jpg" alt="" class="now">
+	<img src="img/薛之谦2.jpg" alt="" class="next">
+	<div class="drawmask"></div>
+	<div class="header">
+		<span class="icon">&#xe60a;</span>
+	</div>
+	<div class="content">
+		<h2>歌名</h2>
+		<h4>歌手</h4>
+	</div>
+	<div class="lyrics">
+		<div class="lrc">
+			
+		</div>
+	</div>
+	<div class="footer">
+		<audio src="music/演员.mp3" autoplay></audio>
+		<div class="schedule">
+			<div class="currentTime"></div>
+			<div class="current">
+				<div class="currentbottom"></div>
+				<div class="cuttenttop"></div>
+				<div class="currentdot"></div>
+			</div>
+			<div class="duration"></div>
+		</div>
+		<div class="mlist">
+			<div>
+				<div class="mlistmask">
+					<div class="top"></div>
+				</div>
+				<div class="top">
+					<h2>
+						播放列表
+						<span></span>
+					</h2>
+				</div>
+				<ul class="list">
+					
+				</ul>
+			</div>
+		</div>
+		<div class="control">
+			<div class="left">
+				<div>
+					<div class="icon now" type="add" value="顺序播放">&#xe630;</div>
+					<div class="icon" type="single" value="随机播放">&#xe62f;</div>
+					<div class="icon" type="random" value="单曲循环">&#xe504;</div>
+				</div>
+			</div>
+			<div class="right icon">&#xe6ec;</div>
+			<div class="center">
+				<div class="before icon">&#xe6e1;</div>
+				<div class="play icon bf">&#xe600;</div>
+				<div class="pause icon bf">&#xe77b;</div>
+				<div class="next icon">&#xe718;</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+</body>
+</html>
