@@ -88,21 +88,20 @@ $(function(){
 		tat=audio.duration;
 		$("#music .footer .duration").text(edittime(tat));
 		range(ml,now);
-		lrc();
+		$("#music>img").eq(0).css("opacity",1).attr("src","img/"+ml[now].autor+"1.jpg");
 		$("#music .footer .mlist .top span").text(ml.length);
 		$("#music .content h2").text(ml[now].name);
 		$("#music .content h4").text(ml[now].autor);
+		lrcjl();
 	}
 	// 播放暂停事件
 	audio.onplay = function(){
 		$("#music .footer .play").css("display","none");
 		$("#music .footer .pause").css("display","block");
-		musict=setInterval(mbgchange,10000);
 	}
 	audio.onpause = function(){
 		$("#music .footer .pause").css("display","none");
 		$("#music .footer .play").css("display","block");
-		clearInterval(mbgchange);
 	}
 	// 播放暂停
 	function play () {
@@ -118,11 +117,13 @@ $(function(){
 	play ();
 	// 播放点的移动
 	$("#music .footer .currentTime").text(edittime(audio.currentTime));
-	$(audio).on("timeupdate",function(){444
+	$(audio).on("timeupdate",function(){
 		var x=audio.currentTime/audio.duration*tw;
 		dot.css("transform","translate("+x+"px)");
 		$('#music .footer .schedule .cuttenttop').css("width",x+"px");
 		$("#music .footer .currentTime").text(edittime(audio.currentTime));
+		lrcstyle();
+		// mbgchange();
 	})
 	// 播放条的点动
 	$("#music .footer .schedule .current").on("touchstart",function(e){
@@ -223,33 +224,37 @@ $(function(){
 				$(audio).attr("src","music/"+ml[now].src);
 			}
 			range(ml,now);
+			$("#music .footer .mlist .top span").text(ml.length);
 			return false;
 		}
-		
 	})
 	// 歌词
-	function lrc (){
-		var lyricObj=ml[now].lrc;
-		var temp=lyricObj.split("[");
-		var html1="";
-		for(var i=0;i<temp.length;i++){
-			var arr=temp[i].split("]");
-			var text=(arr[1]);
-			var time=arr[0].split(",");
-			var temp2=time[0].split(".");
-			var ms=temp2[1];//毫秒
-			var temp3=temp2[0].split(":");			
-			var s=temp3[1];//秒
-			var m=temp3[0];//分
-			var s_sum=parseInt(m*60)+parseInt(s);
-			if(text){
-				html1+="<p id='lyric"+s_sum+"'>"+text+"</p>";
-			}	
-		}
-		$("#music .lyrics .lrc").html(html1);
-		if(s_sum==parseInt(tat)){
-			$("#music #s_sum").css("opacity",1);
-		}
-		$("#music .lyrics .lrc").css("transform","translate("+0.5*parseInt(tat)+"rem)");
+	function lrcjl (){
+		var lrcObj=ml[now].lrc;
+		var temp=lrcObj.split("[");
+		$('#music .lyrics .lrc').empty();
+		$.each(temp,function(i,v){
+			var time=v.split("]")[0];
+			if(time){
+				var h=Math.floor(parseInt(time.split(":")[0]*60)+parseInt(Math.floor(time.split(":")[1]))); //时间
+				$("<p>").text(v.split("]")[1]).appendTo('#music .lyrics .lrc').attr("id",h);
+			}
+		})
 	}
+	function lrcstyle(){
+		var id=$('#music .lyrics .lrc').find("#"+Math.floor(audio.currentTime));
+		if(id.text()){
+			id.prev().removeClass('now');
+			var idn=id.index();
+			id.addClass('now');
+			$('#music .lyrics .lrc').css("transform","translateY(-"+idn*0.5+"rem)");
+			var fontcolor=id.text().split(1);
+			$.each(fontcolor,function(v,m){
+				// console.log(m);
+			})
+		}else{
+			
+		}
+	}	
+			
 })

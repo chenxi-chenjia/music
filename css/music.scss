@@ -133,6 +133,7 @@ body{
 		margin:.5rem auto;
 		overflow:hidden;
 		text-align:center;
+		font-size:0.34rem;
 		line-height:0.5rem;
 		p{
 			opacity:.7;
@@ -143,6 +144,11 @@ body{
 			left:0;
 			top:50%;
 			transition:all .5s linear;
+		}
+		.now{
+			opacity:1;
+			font: .4rem/.7rem "Arial"; 
+			color:#FDFD00;
 		}
 	}
 	.footer{
@@ -206,7 +212,7 @@ body{
 					width:100%;
 					height:.8rem;
 					padding:0 .1rem;
-					overflow:auto;
+					overflow-y:scroll;
 					.serial{
 						height:100%;
 						float:left;
