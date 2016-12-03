@@ -80,12 +80,27 @@ body{
 	padding:0 0.3rem;
 	position:relative;
 	overflow:hidden;
-	&>img{
+	.imgload{
 		@include incenter;
 		top:0;
 		bottom:auto;
 		height:100%;
+		left: 0;
+		width: 100%;
 		z-index:0;
+		img{
+			position:absolute;
+			@include incenter;
+			height: 100%;
+			top:0;
+			left: 0;
+			z-index: 0;
+			opacity: 0;
+			transition: all .5s ease-in-out;
+		}
+		.show{
+			opacity: 1;
+		}
 	}
 	&>.next{
 		opacity:0;
@@ -101,14 +116,6 @@ body{
 		width:100%;
 		height:1rem;
 		position:relative;
-		.icon{
-			width:1rem;
-			height:1rem;
-			line-height:1rem;
-			text-align:center;
-			font-size:0.4rem;
-			display:block;
-		}
 	}
 	.content{
 		width:100%;
@@ -128,15 +135,19 @@ body{
 	}
 	.lyrics{
 		width:70%;
-		height:60%;
+		height:50%;
 		position:relative;
-		margin:.5rem auto;
+		margin:1rem auto .8rem auto;
 		overflow:hidden;
 		text-align:center;
 		font-size:0.34rem;
 		line-height:0.5rem;
+
 		p{
 			opacity:.7;
+			span{
+				transition:all .5s ease-in-out;
+			}
 		}
 		.lrc{
 			position:absolute;
@@ -148,8 +159,11 @@ body{
 		.now{
 			opacity:1;
 			font: .4rem/.7rem "Arial"; 
-			color:#FDFD00;
+			.nfont{
+				color:#FDFD00;
+			}
 		}
+		
 	}
 	.footer{
 		width:100%;
@@ -179,8 +193,8 @@ body{
 				width:100%;
 				height:100%;
 				position:absolute;
-				background:#a2a2a2;
-				opacity:.97;
+				background:#000;
+				opacity:.6;
 				.top{
 					border-bottom:0.02rem solid #5a5a5a;
 				}

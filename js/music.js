@@ -19,7 +19,7 @@ $(function(){
 	var cutway=$("#music .footer .control .left");
 	var way=$("#music .footer .control .now").attr("type");
 	var waynow=0;
-	var imgnow=1;
+	var imgnow=0;
 	var musict;
 	// 音乐波放列表
 	var ml=[
@@ -74,16 +74,32 @@ $(function(){
 		}
 	];
 ////////////////////////////////////////////////////////////
+	//图片缓存
+	// $.each(ml,function(i,v){
+	// 	for(var n=0;n<v.background.length;n++){
+	// 		$("<li>").html("<img src='img/"+v.src+"'>").appendTo("#music .img-onload");
+	// 	}
+	// })
 	// 背景图片改变
 	function mbgchange(){
+		$("#music .imgload").empty();
+		$.each(ml[now].background,function(i,v){
+			var img=$("<img>");
+			img.attr("src","img/"+ml[now].autor+v+".jpg").appendTo("#music .imgload");
+			if(i===0){
+				img.addClass("show");
+			}
+		})
+	}
+	function mgmove(){
 		var imgnext=imgnow+1;
-		if(imgnext>ml[now].background.length){
-			imgnext=1;
+		if(imgnext>=ml[now].background.length){
+			imgnext=0;
 		};
-		$("#music>img").eq(0).css("opacity",1).attr("src","img/"+ml[now].autor+imgnow+".jpg").animate({opacity:0});
-		$("#music>img").eq(1).css("opacity",0).attr("src","img/"+ml[now].autor+imgnext+".jpg").animate({opacity:1});
+		$(".imgload").find(".show").removeClass("show").end().find("img").eq(imgnext).addClass("show");
 		imgnow=imgnext;
 	}
+	var migst;
 	audio.oncanplay = function(){
 		tat=audio.duration;
 		$("#music .footer .duration").text(edittime(tat));
@@ -93,6 +109,8 @@ $(function(){
 		$("#music .content h2").text(ml[now].name);
 		$("#music .content h4").text(ml[now].autor);
 		lrcjl();
+		mbgchange();
+		mint=setInterval(mgmove,10000);
 	}
 	// 播放暂停事件
 	audio.onplay = function(){
@@ -123,7 +141,6 @@ $(function(){
 		$('#music .footer .schedule .cuttenttop').css("width",x+"px");
 		$("#music .footer .currentTime").text(edittime(audio.currentTime));
 		lrcstyle();
-		// mbgchange();
 	})
 	// 播放条的点动
 	$("#music .footer .schedule .current").on("touchstart",function(e){
@@ -170,11 +187,13 @@ $(function(){
 			now=ml.length-1;
 		}
 		$(audio).attr("src","music/"+ml[now].src);
+		clearInterval(mint);
 	}
 	audio.onended = function(){
 		cutmusic(way);
 		range(ml,now);
 		audio.play();
+
 	}
 	$("#music .footer .control .center").on("touchend",".next",function(){
 		cutmusic(way);
@@ -229,32 +248,99 @@ $(function(){
 		}
 	})
 	// 歌词
+	var flarr=[]; //p标签中文字个数
 	function lrcjl (){
 		var lrcObj=ml[now].lrc;
-		var temp=lrcObj.split("[");
-		$('#music .lyrics .lrc').empty();
-		$.each(temp,function(i,v){
-			var time=v.split("]")[0];
-			if(time){
-				var h=Math.floor(parseInt(time.split(":")[0]*60)+parseInt(Math.floor(time.split(":")[1]))); //时间
-				$("<p>").text(v.split("]")[1]).appendTo('#music .lyrics .lrc').attr("id",h);
-			}
+		var larr=lrcf(lrcObj);
+		$(".lyrics").empty();
+		flarr=[];
+		$.each(larr,function(i,v){
+			var p=$("<p>");
+			var farr=v.l.split("");
+			$.each(farr,function(n,m){
+				$("<span>").text(m).appendTo(p);
+			})
+			flarr.push(farr.length);
+			p.css("transform","translateY(150px)").attr("id",v.t).appendTo(".lyrics");
 		})
 	}
-	function lrcstyle(){
-		var id=$('#music .lyrics .lrc').find("#"+Math.floor(audio.currentTime));
-		if(id.text()){
-			id.prev().removeClass('now');
-			var idn=id.index();
-			id.addClass('now');
-			$('#music .lyrics .lrc').css("transform","translateY(-"+idn*0.5+"rem)");
-			var fontcolor=id.text().split(1);
-			$.each(fontcolor,function(v,m){
-				// console.log(m);
-			})
-		}else{
-			
+	//字符串处理
+	function lrcf(str){
+		var arr=str.split("[");
+		var narr=[];
+		var larr=[];
+		var lnarr=[];
+		arr.forEach(function(v,i){
+			var v=v.trim();
+			if(v){
+				if(v[v.length-1]!=="]"){
+					narr.push(v);
+				}else if(v[v.length-1]==="]"){
+					arr[i+1]=v+arr[i+1];
+				}
+			}
+			arr.slice(arr.length,1);
+		})
+		narr.forEach(function(v,i){
+			var a=v.split("]");
+			for(var n=0;n<a.length-1;n++){
+				var tm=parseInt(a[n].split(":")[0]*60+Math.floor(a[n].split(":")[1]));
+				var l={
+					t:tm,
+					l:a[a.length-1]
+				};
+				larr.push(l);
+			}
+		})
+		for(var i=0;i<larr.length;i++){
+			var tem;
+			for(var j=i+1;j<larr.length;j++){
+				if(larr[j].t<larr[i].t){
+					tem=larr[j];
+					larr[j]=larr[i];
+					larr[i]=tem;
+				}
+			}
 		}
+		larr.forEach(function(v,i){
+			var tem;
+			larr.forEach(function(m,n){
+				if(v.t===m.t&&i!==n){
+					tem=n;
+				}
+			})
+			if(tem){
+				larr.splice(tem,1);
+			}
+		})
+		return larr;
+	}
+	function lrcstyle(){
+		var lrcObj=ml[now].lrc;
+		var arr=lrcf(lrcObj);
+		var id=Math.floor(audio.currentTime);
+		var tem;
+		var ntem;
+		$.each(arr,function(i,v){
+			if(v.t<id){
+				tem=parseInt(v.t);
+				if(arr[i+1]){
+					ntem=parseInt(arr[i+1].t);
+				}else{
+					ntem=parseInt(edittime(audio.duration));
+				}
+			}
+		})
+		$(".lyrics").find(".now").removeClass("now");
+		$(".lyrics").find("#"+tem).addClass("now");
+		var nw=$(".lyrics").find(".now");
+		var index=parseInt(nw.index());
+		var tm=parseInt(ntem-tem);
+		var ts=parseInt(id-tem);
+		if(arr[index]){
+			var fi=Math.ceil(ts/tm*parseInt(flarr[index]));
+			nw.find("span").slice(0,fi).addClass("nfont");
+		}
+		$(".lyrics").find("p").css("transform","translateY("+(150-index*24.8)+"px)")
 	}	
-			
 })

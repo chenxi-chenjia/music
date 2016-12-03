@@ -6,7 +6,7 @@ lyc={
 			if(v){
 				var s=testarr[i-1];
 				var sl=s.length;
-				if(s[sl-1]==="]"){
+				if(s[sl-1]!=="]"){
 					
 				}
 			}
