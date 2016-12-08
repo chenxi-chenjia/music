@@ -74,12 +74,6 @@ $(function(){
 		}
 	];
 ////////////////////////////////////////////////////////////
-	//图片缓存
-	// $.each(ml,function(i,v){
-	// 	for(var n=0;n<v.background.length;n++){
-	// 		$("<li>").html("<img src='img/"+v.src+"'>").appendTo("#music .img-onload");
-	// 	}
-	// })
 	// 背景图片改变
 	function mbgchange(){
 		$("#music .imgload").empty();
@@ -99,7 +93,7 @@ $(function(){
 		$(".imgload").find(".show").removeClass("show").end().find("img").eq(imgnext).addClass("show");
 		imgnow=imgnext;
 	}
-	var migst;
+	var migst=setInterval(mgmove,10000)
 	audio.oncanplay = function(){
 		tat=audio.duration;
 		$("#music .footer .duration").text(edittime(tat));
@@ -110,7 +104,6 @@ $(function(){
 		$("#music .content h4").text(ml[now].autor);
 		lrcjl();
 		mbgchange();
-		mint=setInterval(mgmove,10000);
 	}
 	// 播放暂停事件
 	audio.onplay = function(){
@@ -187,13 +180,11 @@ $(function(){
 			now=ml.length-1;
 		}
 		$(audio).attr("src","music/"+ml[now].src);
-		clearInterval(mint);
 	}
 	audio.onended = function(){
 		cutmusic(way);
 		range(ml,now);
 		audio.play();
-
 	}
 	$("#music .footer .control .center").on("touchend",".next",function(){
 		cutmusic(way);
@@ -341,6 +332,11 @@ $(function(){
 			var fi=Math.ceil(ts/tm*parseInt(flarr[index]));
 			nw.find("span").slice(0,fi).addClass("nfont");
 		}
-		$(".lyrics").find("p").css("transform","translateY("+(150-index*24.8)+"px)")
+		if(parseInt(arr[index])>11){
+			moveH=(150-index*24.8*2);
+		}else{
+			moveH=(150-index*24.8);
+		}
+		$(".lyrics").find("p").css("transform","translateY("+moveH+"px)")
 	}	
 })
